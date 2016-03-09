@@ -35,203 +35,73 @@ class Filesystem extends FilesystemCache{
 
     /**
      * @param $methodName
-     * @return StopwatchEvent
+     * @return StopwatchEvent|null
      */
     protected function getStopwatchEvent($methodName)
     {
+        if (!$this->stopwatch) {
+            return null;
+        }
         $tags = $this->stopwatchAdditionalTags;
         $tags['group'] = 'filesystem::' . $methodName;
 
         return $this->stopwatch->start($tags);
     }
 
+
     /**
-     * Sets the namespace to prefix all cache ids with.
+     * Fetches an entry from the cache.
      *
-     * @param string $namespace
+     * @param string $id The id of the cache entry to fetch.
      *
-     * @return void
+     * @return mixed|false The cached data or FALSE, if no cache entry exists for the given id.
      */
-    public function setNamespace($namespace) {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        parent::setNamespace($namespace);
-        if ($this->stopwatch && isset($e)) {
+    protected function doFetch($id)
+    {
+        $e = $this->getStopwatchEvent(__FUNCTION__);
+        $result = parent::doFetch($id);
+        if ($e) {
             $e->stop();
         }
+
+        return $result;
     }
 
     /**
-     * Retrieves the namespace that prefixes all cache ids.
+     * Tests if an entry exists in the cache.
      *
-     * @return string
-     */
-    public function getNamespace() {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::getNamespace();
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function fetch($id) {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::fetch($id);
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function fetchMultiple(array $keys) {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::fetchMultiple($keys);
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function contains($id) {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::contains($id);
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function save($id, $data, $lifeTime = 0) {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::save($id, $data, $lifeTime);
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($id) {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::delete($id);
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getStats() {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::getStats();
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function flushAll() {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::flushAll();
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function deleteAll() {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::deleteAll();
-        if ($this->stopwatch && isset($e)) {
-            $e->stop();
-        }
-
-        return $result;
-    }
-
-    /**
-     * Gets the cache directory.
+     * @param string $id The cache id of the entry to check for.
      *
-     * @return string
+     * @return bool TRUE if a cache entry exists for the given cache id, FALSE otherwise.
      */
-    public function getDirectory() {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::getDirectory();
-        if ($this->stopwatch && isset($e)) {
+    protected function doContains($id)
+    {
+        $e = $this->getStopwatchEvent(__FUNCTION__);
+        $result = parent::doContains($id);
+        if ($e) {
             $e->stop();
         }
-
         return $result;
     }
 
     /**
-     * Gets the cache file extension.
+     **
+     * Puts data into the cache.
      *
-     * @return string|null
+     * @param string $id       The cache id.
+     * @param string $data     The cache entry/data.
+     * @param int    $lifeTime The lifetime. If != 0, sets a specific lifetime for this
+     *                           cache entry (0 => infinite lifeTime).
+     *
+     * @return bool TRUE if the entry was successfully stored in the cache, FALSE otherwise.
      */
-    public function getExtension() {
-        if ($this->stopwatch) {
-            $e = $this->getStopwatchEvent(__FUNCTION__);
-        }
-        $result = parent::getExtension();
-        if ($this->stopwatch && isset($e)) {
+    protected function doSave($id, $data, $lifeTime = 0)
+    {
+        $e = $this->getStopwatchEvent(__FUNCTION__);
+        $result = parent::doSave($id, $data, $lifeTime);
+        if ($e) {
             $e->stop();
         }
-
         return $result;
     }
-
-
 }

@@ -23,7 +23,8 @@ class TimedTwigDecorator extends \Twig_Environment{
      * @param \Twig_Environment $environment
      * @param Stopwatch         $stopwatch
      */
-    public function __construct(\Twig_Environment $environment, Stopwatch $stopwatch) {
+    public function __construct(\Twig_Environment $environment, Stopwatch $stopwatch)
+    {
         $this->environment = $environment;
         $this->stopwatch   = $stopwatch;
     }
@@ -40,7 +41,8 @@ class TimedTwigDecorator extends \Twig_Environment{
      * @throws \Twig_Error_Syntax  When an error occurred during compilation
      * @throws \Twig_Error_Runtime When an error occurred during rendering
      */
-    public function render($name, array $context = array()) {
+    public function render($name, array $context = array())
+    {
         $e = $this->stopwatch->start(array(
             'server'        => 'localhost',
             'group'         => 'twig::render',
@@ -63,7 +65,8 @@ class TimedTwigDecorator extends \Twig_Environment{
      * @return mixed
      * @link http://php.net/manual/en/language.oop5.overloading.php#language.oop5.overloading.methods
      */
-    function __call($name, $arguments) {
+    function __call($name, $arguments)
+    {
         return $this->environment->$name($arguments);
     }
 
