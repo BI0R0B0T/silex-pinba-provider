@@ -57,7 +57,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         parent::setNamespace($namespace);
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
     }
@@ -72,7 +72,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::getNamespace();
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -87,7 +87,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::fetch($id);
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -102,7 +102,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::fetchMultiple($keys);
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -117,7 +117,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::contains($id);
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -132,7 +132,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::save($id, $data, $lifeTime);
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -147,7 +147,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::delete($id);
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -162,7 +162,11 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::getStats();
+        if ($this->stopwatch && isset($e)) {
+            $e->stop();
+        }
 
+        return $result;
     }
 
     /**
@@ -173,7 +177,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::flushAll();
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -188,7 +192,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::deleteAll();
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -205,7 +209,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::getDirectory();
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
@@ -222,7 +226,7 @@ class Filesystem extends FilesystemCache{
             $e = $this->getStopwatchEvent(__FUNCTION__);
         }
         $result = parent::getExtension();
-        if ($this->stopwatch) {
+        if ($this->stopwatch && isset($e)) {
             $e->stop();
         }
 
