@@ -1,6 +1,9 @@
 # silex-pinba-provider #
 Provide [PinbaBundle](https://github.com/intaro/pinba-bundle) functionality for [Silex](http://silex.sensiolabs.org/)
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/BI0R0B0T/silex-pinba-provider/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/BI0R0B0T/silex-pinba-provider/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/BI0R0B0T/silex-pinba-provider/badges/build.png?b=master)](https://scrutinizer-ci.com/g/BI0R0B0T/silex-pinba-provider/build-status/master)
+
 ## Installation ##
 Through [Composer](http://getcomposer.org) as [bi0r0b0t/silex-pinba-provider][1] .
 
