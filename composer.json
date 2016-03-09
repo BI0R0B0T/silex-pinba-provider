@@ -1,0 +1,17 @@
+{
+  "name": "bi0r0b0t/silex-pinba-provider",
+  "description": "Provide PinbaBundle for Silex",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mikhail Dolgov",
+      "email": "dolgov@bk.ru"
+    }
+  ],
+  "keywords": ["silex", "pinba", "php"],
+  "require": {
+    "intaro/pinba-bundle": "~0.4.2",
+    "silex/silex": "~1.3"
+  }
+}
