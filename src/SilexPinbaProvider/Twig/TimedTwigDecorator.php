@@ -20,13 +20,20 @@ class TimedTwigDecorator extends \Twig_Environment{
     private $stopwatch;
 
     /**
+     * @var string
+     */
+    private $serverName;
+
+    /**
      * @param \Twig_Environment $environment
      * @param Stopwatch         $stopwatch
+     * @param string            $serverName
      */
-    public function __construct(\Twig_Environment $environment, Stopwatch $stopwatch)
+    public function __construct(\Twig_Environment $environment, Stopwatch $stopwatch, $serverName = 'localhost')
     {
         $this->environment = $environment;
         $this->stopwatch   = $stopwatch;
+        $this->serverName  = $serverName;
     }
 
     /**
@@ -44,7 +51,7 @@ class TimedTwigDecorator extends \Twig_Environment{
     public function render($name, array $context = array())
     {
         $e = $this->stopwatch->start(array(
-            'server'        => 'localhost',
+            'server'        => $this->serverName,
             'group'         => 'twig::render',
             'twig_template' => (string)$name,
         ));
@@ -56,6 +63,23 @@ class TimedTwigDecorator extends \Twig_Environment{
         return $ret;
 
     }
+
+    /**
+     * @return \Twig_Environment
+     */
+    public function getEnvironment()
+    {
+        return (method_exists($this->environment, 'getEnvironment'))? $this->environment->getEnvironment():$this->environment;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLoader()
+    {
+        return $this->environment->getLoader();
+    }
+
 
     /**
      * is triggered when invoking inaccessible methods in an object context.

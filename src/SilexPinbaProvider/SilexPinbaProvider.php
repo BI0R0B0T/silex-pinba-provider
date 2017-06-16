@@ -22,15 +22,13 @@ class SilexPinbaProvider implements ServiceProviderInterface{
      * @param Application $app
      */
     public function register(Application $app) {
-        if( !function_exists('pinba_script_name_set') || PHP_SAPI === 'cli' )
-        {
-            return;
-        }
 
         $app['intaro_pinba.script_name_configure.class']      = 'Intaro\PinbaBundle\EventListener\ScriptNameConfigureListener';
         $app['intaro_pinba.stopwatch.class']                  = 'Intaro\PinbaBundle\Stopwatch\Stopwatch';
         $app['intaro_pinba.templating.engine.twig.class']     = 'SilexPinbaProvider\Twig\TimedTwigDecorator';
         $app['intaro_pinba.dbal.logger.class']                = 'Intaro\PinbaBundle\Logger\DbalLogger';
+        $app['intaro_pinba.server.name']                      = 'localhost';
+        $app['intaro_pinba.script_name_configure.enable']     = true;
 
 
         $app['intaro_pinba.script_name_configure.listener'] = $app->share(function() use($app) {
@@ -46,7 +44,7 @@ class SilexPinbaProvider implements ServiceProviderInterface{
              * @see \Intaro\PinbaBundle\Logger\DbalLogger
              */
             $className = $app['intaro_pinba.dbal.logger.class'];
-            $host      = isset($app["intaro_pinba.doctrine.database_host"]) ? $app["intaro_pinba.doctrine.database_host"] : 'localhost';
+            $host      = isset($app["intaro_pinba.doctrine.database_host"]) ? $app["intaro_pinba.doctrine.database_host"] : $app['intaro_pinba.server.name'];
             return new $className( $app["intaro_pinba.stopwatch"], $host);
         });
 
@@ -75,7 +73,15 @@ class SilexPinbaProvider implements ServiceProviderInterface{
      * @param Application $app
      */
     public function boot(Application $app) {
-        if(!function_exists('pinba_script_name_set') || PHP_SAPI === 'cli')
+        $app['twig'] = $app->extend('twig', function(\Twig_Environment $twig) use ($app) {
+            /**
+             * @see \Intaro\PinbaBundle\Twig\TimedTwigEngine
+             */
+            $className = $app['intaro_pinba.templating.engine.twig.class'];
+            return new $className($twig, $app['intaro_pinba.stopwatch'], $app['intaro_pinba.server.name']);
+        });
+
+        if(!function_exists('pinba_script_name_set') || PHP_SAPI === 'cli' || !$app['intaro_pinba.script_name_configure.enable'])
         {
             return;
         }
@@ -84,13 +90,6 @@ class SilexPinbaProvider implements ServiceProviderInterface{
          */
         $dispatcher = $app['dispatcher'];
         $dispatcher->addListener('kernel.request', array($app['intaro_pinba.script_name_configure.listener'], 'onRequest'));
-        $app['twig'] = $app->extend('twig', function(\Twig_Environment $twig) use ($app) {
-            /**
-             * @see \Intaro\PinbaBundle\Twig\TimedTwigEngine
-             */
-            $className = $app['intaro_pinba.templating.engine.twig.class'];
-            return new $className($twig, $app['intaro_pinba.stopwatch']);
-        });
 
     }
 

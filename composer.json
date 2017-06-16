@@ -2,6 +2,7 @@
   "name": "bi0r0b0t/silex-pinba-provider",
   "description": "Provide PinbaBundle for Silex",
   "minimum-stability": "stable",
+  "version": "0.1.4",
   "license": "MIT",
   "authors": [
     {

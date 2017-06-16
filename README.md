@@ -9,7 +9,7 @@ Through [Composer](http://getcomposer.org) as [bi0r0b0t/silex-pinba-provider][1]
 
 Require the bundle in your `composer.json` file:
 
-````json
+```json
 {
     "require": {
         "bi0r0b0t/silex-pinba-provider": "~0.1.0",
@@ -59,6 +59,29 @@ $app['orm.cache.factory.backing_memcache'] = $app->protect(function() use ($app)
    $cache->setStopwatch($app['intaro_pinba.stopwatch']);
    return $cache;
 });
+```
+
+## Using with console ##
+
+```php
+/**
+ * @var $console Symfony\Component\Console\Application
+ * @var $app     Silex\Application
+ */
+if (function_exists('pinba_script_name_set')) {
+    pinba_script_name_set('console');
+    $input = new Symfony\Component\Console\Input\ArgvInput();
+    $timer = pinba_timer_start(array(
+        'server'  => $app['intaro_pinba.server.name'],
+        'group'   => 'console::run',
+        'command' => $input->getFirstArgument(),
+    ));
+    $res = $console->run($input);
+    pinba_timer_stop($timer);
+    return $res;
+} else {
+    return $console->run();
+}
 ```
 
 [1]: https://packagist.org/packages/bi0r0b0t/silex-pinba-provider
