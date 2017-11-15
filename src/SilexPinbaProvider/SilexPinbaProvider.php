@@ -9,8 +9,8 @@ namespace SilexPinbaProvider;
 
 use Doctrine\DBAL\Configuration;
 use Intaro\PinbaBundle\Logger\DbalLogger;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class SilexPinbaProvider implements ServiceProviderInterface{
 
@@ -19,9 +19,9 @@ class SilexPinbaProvider implements ServiceProviderInterface{
      *
      * This method should only be used to configure services and parameters.
      * It should not get services.
-     * @param Application $app
+     * @param Container $app
      */
-    public function register(Application $app) {
+    public function register(Container $app) {
 
         $app['intaro_pinba.script_name_configure.class']      = 'Intaro\PinbaBundle\EventListener\ScriptNameConfigureListener';
         $app['intaro_pinba.stopwatch.class']                  = 'Intaro\PinbaBundle\Stopwatch\Stopwatch';
@@ -31,27 +31,27 @@ class SilexPinbaProvider implements ServiceProviderInterface{
         $app['intaro_pinba.script_name_configure.enable']     = true;
 
 
-        $app['intaro_pinba.script_name_configure.listener'] = $app->share(function() use($app) {
+        $app['intaro_pinba.script_name_configure.listener'] = function() use($app) {
             return new $app['intaro_pinba.script_name_configure.class'];
-        });
+        };
 
-        $app['intaro_pinba.stopwatch']  = $app->share(function() use ($app) {
+        $app['intaro_pinba.stopwatch']  = function() use ($app) {
             return new $app['intaro_pinba.stopwatch.class'];
-        });
+        };
 
-        $app['doctrine.dbal.logger'] = $app->share(function() use ($app) {
+        $app['doctrine.dbal.logger'] = function() use ($app) {
             /**
              * @see \Intaro\PinbaBundle\Logger\DbalLogger
              */
             $className = $app['intaro_pinba.dbal.logger.class'];
             $host      = isset($app["intaro_pinba.doctrine.database_host"]) ? $app["intaro_pinba.doctrine.database_host"] : $app['intaro_pinba.server.name'];
             return new $className( $app["intaro_pinba.stopwatch"], $host);
-        });
+        };
 
-        $app['dbs.config'] = $app->share(function ($app) {
+        $app['dbs.config'] = function ($app) {
             $app['dbs.options.initializer']();
 
-            $configs = new \Pimple();
+            $configs = new Container();
             foreach ($app['dbs.options'] as $name => $options) {
                 $configs[$name] = new Configuration();
 
@@ -61,7 +61,7 @@ class SilexPinbaProvider implements ServiceProviderInterface{
             }
 
             return $configs;
-        });
+        };
     }
 
     /**
@@ -70,9 +70,9 @@ class SilexPinbaProvider implements ServiceProviderInterface{
      * This method is called after all services are registered
      * and should be used for "dynamic" configuration (whenever
      * a service must be requested).
-     * @param Application $app
+     * @param Container $app
      */
-    public function boot(Application $app) {
+    public function boot(Container $app) {
         $app['twig'] = $app->extend('twig', function(\Twig_Environment $twig) use ($app) {
             /**
              * @see \Intaro\PinbaBundle\Twig\TimedTwigEngine

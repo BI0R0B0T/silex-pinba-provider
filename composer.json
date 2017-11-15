@@ -2,7 +2,7 @@
   "name": "bi0r0b0t/silex-pinba-provider",
   "description": "Provide PinbaBundle for Silex",
   "minimum-stability": "stable",
-  "version": "0.1.4",
+  "version": "1.0.1",
   "license": "MIT",
   "authors": [
     {
@@ -14,7 +14,7 @@
   "require": {
     "doctrine/dbal": "~2.2",
     "intaro/pinba-bundle": "~0.4.2",
-    "silex/silex": "1.*",
+    "silex/silex": "~2.0",
     "twig/twig"  : ">=1.8,<2.0-dev"
   },
   "require-dev": {

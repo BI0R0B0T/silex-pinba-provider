@@ -5,6 +5,24 @@ Provide [PinbaBundle](https://github.com/intaro/pinba-bundle) functionality for 
 [![Build Status](https://scrutinizer-ci.com/g/BI0R0B0T/silex-pinba-provider/badges/build.png?b=master)](https://scrutinizer-ci.com/g/BI0R0B0T/silex-pinba-provider/build-status/master)
 
 ## Installation ##
+
+### For Silex 2.0
+
+```bash
+    composer require bi0r0b0t/silex-pinba-provider
+```
+or
+Require the bundle in your `composer.json` file:
+
+```json
+{
+    "require": {
+        "bi0r0b0t/silex-pinba-provider": "~1.0",
+    }
+}
+```
+
+### For Silex 1.0
 Through [Composer](http://getcomposer.org) as [bi0r0b0t/silex-pinba-provider][1] .
 
 Require the bundle in your `composer.json` file:
@@ -12,7 +30,7 @@ Require the bundle in your `composer.json` file:
 ```json
 {
     "require": {
-        "bi0r0b0t/silex-pinba-provider": "~0.1.0",
+        "bi0r0b0t/silex-pinba-provider": "~0.1",
     }
 }
 ```
