@@ -18,6 +18,12 @@
     "twig/twig"  : ">=1.8,<2.0-dev"
   },
   "require-dev": {
-    "misterion/pinba-phpdoc": "dev-master"
+    "misterion/pinba-phpdoc": "dev-master",
+    "phpunit/phpunit": "^6.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "SilexPinbaProvider\\": "src/"
+    }
   }
 }
