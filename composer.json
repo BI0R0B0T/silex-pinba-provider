@@ -13,9 +13,9 @@
   "keywords": ["silex", "pinba", "php"],
   "require": {
     "doctrine/dbal": "~2.2",
-    "intaro/pinba-bundle": "~0.4.2",
+    "intaro/pinba-bundle": "~0.4.2|^1.0",
     "silex/silex": "~2.0",
-    "twig/twig"  : ">=1.8,<2.0-dev"
+    "twig/twig"  : "~1.28|~2.0"
   },
   "require-dev": {
     "misterion/pinba-phpdoc": "dev-master",
