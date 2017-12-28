@@ -37,7 +37,7 @@ Require the bundle in your `composer.json` file:
 
 ## Register ##
 
-**Important!** Register the bundle in `prod` environment:
+**Important!** Register the bundle in `prod` environment after TwigServiceProvider and DoctrineServiceProvider:
 
 ```php
 /**

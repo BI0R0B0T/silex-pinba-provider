@@ -13,6 +13,7 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Api\BootableProviderInterface;
 use Silex\Application;
+use SilexPinbaProvider\Twig\TimedTwigEnvironment;
 
 class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderInterface
 {
@@ -29,7 +30,7 @@ class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderIn
 
         $app['intaro_pinba.script_name_configure.class']      = 'Intaro\PinbaBundle\EventListener\ScriptNameConfigureListener';
         $app['intaro_pinba.stopwatch.class']                  = 'Intaro\PinbaBundle\Stopwatch\Stopwatch';
-        $app['intaro_pinba.templating.engine.twig.class']     = 'SilexPinbaProvider\Twig\TimedTwigDecorator';
+        $app['intaro_pinba.templating.engine.twig.class']     = 'SilexPinbaProvider\Twig\TimedTwigEnvironment';
         $app['intaro_pinba.dbal.logger.class']                = 'Intaro\PinbaBundle\Logger\DbalLogger';
         $app['intaro_pinba.server.name']                      = 'localhost';
         $app['intaro_pinba.script_name_configure.enable']     = true;
@@ -66,6 +67,11 @@ class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderIn
 
             return $configs;
         };
+
+        $app['twig.environment_factory'] = $app->protect(function ($app) {
+            $className = $app['intaro_pinba.templating.engine.twig.class'];
+            return new $className($app['twig.loader'], $app['twig.options']);
+        });
     }
 
     /**
@@ -79,11 +85,13 @@ class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderIn
     public function boot(Application $app)
     {
         $app['twig'] = $app->extend('twig', function (\Twig_Environment $twig) use ($app) {
-            /**
-             * @see \Intaro\PinbaBundle\Twig\TimedTwigEngine
-             */
-            $className = $app['intaro_pinba.templating.engine.twig.class'];
-            return new $className($twig, $app['intaro_pinba.stopwatch'], $app['intaro_pinba.server.name']);
+            if($twig instanceof TimedTwigEnvironment) {
+                $twig
+                    ->setStopwatch( $app['intaro_pinba.stopwatch'])
+                    ->setServerName($app['intaro_pinba.server.name'])
+                ;
+            }
+            return $twig;
         });
 
         if (!function_exists('pinba_script_name_set') || PHP_SAPI === 'cli' || !$app['intaro_pinba.script_name_configure.enable']) {
