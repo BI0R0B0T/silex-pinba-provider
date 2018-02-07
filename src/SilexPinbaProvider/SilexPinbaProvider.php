@@ -84,7 +84,7 @@ class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderIn
      */
     public function boot(Application $app)
     {
-        $app['twig'] = $app->extend('twig', function (\Twig_Environment $twig) use ($app) {
+        $app->extend('twig', function (\Twig_Environment $twig) use ($app) {
             if($twig instanceof TimedTwigEnvironment) {
                 $twig
                     ->setStopwatch( $app['intaro_pinba.stopwatch'])

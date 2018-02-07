@@ -2,7 +2,7 @@
   "name": "bi0r0b0t/silex-pinba-provider",
   "description": "Provide PinbaBundle for Silex",
   "minimum-stability": "stable",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "authors": [
     {
@@ -17,9 +17,28 @@
     "silex/silex": "~2.0",
     "twig/twig"  : "~1.28|~2.0"
   },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "gggeek/pinba_php",
+        "version": "dev-master",
+        "dist": {
+          "url": "https://github.com/gggeek/pinba_php/archive/d23c3725a19d53a6f98f91673d73e8f685f6f3d7.zip",
+          "type": "zip"
+        },
+        "source": {
+          "url": "https://github.com/gggeek/pinba_php.git",
+          "type": "git",
+          "reference": "https://github.com/gggeek/pinba_php/blob/master/README"
+        }
+      }
+    }
+  ],
   "require-dev": {
     "misterion/pinba-phpdoc": "dev-master",
-    "phpunit/phpunit": "^6.4"
+    "phpunit/phpunit": "^6.4",
+    "gggeek/pinba_php": "dev-master#d23c3725a19d53a6f98f91673d73e8f685f6f3d7"
   },
   "autoload": {
     "psr-4": {
