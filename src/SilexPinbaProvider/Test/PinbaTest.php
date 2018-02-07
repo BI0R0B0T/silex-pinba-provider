@@ -8,6 +8,7 @@ namespace SilexPinbaProvider\Test;
 
 use Intaro\PinbaBundle\Stopwatch\Stopwatch;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\AbstractLogger;
 use Silex\Provider\TwigServiceProvider;
 use SilexPinbaProvider\SilexPinbaProvider;
 use Silex\Application;
@@ -18,10 +19,17 @@ class PinbaTest extends TestCase
     public function testTwigExtension()
     {
 
-
+        global $app;
         $storage = new \ArrayObject();
-
-        $app      = new ApplicationEmulator();
+        $app     = new ApplicationEmulator();
+        $emulate = false;
+        if(!function_exists('pinba_script_name_set')) {
+            $emulate = true;
+            $app['pinba_logger'] = function () {
+                return new PinbaLogger();
+            };
+            require __DIR__.'/../pinba_emulator.php';
+        }
         $app
             ->register(new TwigServiceProvider(),array(
                 'twig.templates' => array('hello' => 'Hello {{ name }}!'),
@@ -30,9 +38,28 @@ class PinbaTest extends TestCase
 
         $app['intaro_pinba.stopwatch.class'] = 'SilexPinbaProvider\Test\StopwatchEmulate';
         $app->boot();
-        $app['intaro_pinba.stopwatch'] -> setStorage($storage);
+        /**
+         * @var $stopwatch StopwatchEmulate
+         */
+        $stopwatch = $app['intaro_pinba.stopwatch'];
+        $this->assertTrue($stopwatch instanceof Stopwatch);
+        $stopwatch-> setStorage($storage);
         $app->renderView('hello');
         $this->assertTrue(is_array($storage['tags']), var_export($storage, true));
+        if($emulate) {
+            /**
+             * @var $logger PinbaLogger
+             */
+            $logger = $app['pinba_logger'];
+            $this->assertTrue($logger instanceof PinbaLogger);
+            $stack = $logger->getLogStack();
+            $this->assertTrue(is_array($stack));
+            $this->assertNotEmpty($stack);
+            $expected = [
+                ['debug', 'pinba_get_info', []],
+            ];
+            $this->assertEquals($expected, $stack);
+        }
     }
 }
 
@@ -98,4 +125,32 @@ class StopwatchEventEmulate
 class ApplicationEmulator extends Application
 {
     use Application\TwigTrait;
+}
+
+class PinbaLogger extends AbstractLogger {
+
+    private $logStack = [];
+
+    /**
+     * Logs with an arbitrary level.
+     *
+     * @param mixed $level
+     * @param string $message
+     * @param array $context
+     *
+     * @return void
+     */
+    public function log($level, $message, array $context = array())
+    {
+        $this->logStack[] = [$level, $message, $context];
+    }
+
+    /**
+     * @return array
+     */
+    public function getLogStack()
+    {
+        return $this->logStack;
+    }
+
 }

@@ -70,7 +70,14 @@ class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderIn
 
         $app['twig.environment_factory'] = $app->protect(function ($app) {
             $className = $app['intaro_pinba.templating.engine.twig.class'];
-            return new $className($app['twig.loader'], $app['twig.options']);
+            $twig      = new $className($app['twig.loader'], $app['twig.options']);
+            if($twig instanceof TimedTwigEnvironment) {
+                $twig
+                    ->setStopwatch( $app['intaro_pinba.stopwatch'])
+                    ->setServerName($app['intaro_pinba.server.name'])
+                ;
+            }
+            return $twig;
         });
     }
 
@@ -84,16 +91,6 @@ class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderIn
      */
     public function boot(Application $app)
     {
-        $app->extend('twig', function (\Twig_Environment $twig) use ($app) {
-            if($twig instanceof TimedTwigEnvironment) {
-                $twig
-                    ->setStopwatch( $app['intaro_pinba.stopwatch'])
-                    ->setServerName($app['intaro_pinba.server.name'])
-                ;
-            }
-            return $twig;
-        });
-
         if (!function_exists('pinba_script_name_set') || PHP_SAPI === 'cli' || !$app['intaro_pinba.script_name_configure.enable']) {
             return;
         }
