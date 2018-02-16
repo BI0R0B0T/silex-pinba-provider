@@ -11,11 +11,10 @@ use Doctrine\DBAL\Configuration;
 use Intaro\PinbaBundle\Logger\DbalLogger;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Silex\Api\BootableProviderInterface;
 use Silex\Application;
 use SilexPinbaProvider\Twig\TimedTwigEnvironment;
 
-class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderInterface
+class SilexPinbaProvider implements ServiceProviderInterface
 {
 
     /**
@@ -79,27 +78,16 @@ class SilexPinbaProvider implements ServiceProviderInterface, BootableProviderIn
             }
             return $twig;
         });
-    }
 
-    /**
-     * Bootstraps the application.
-     *
-     * This method is called after all services are registered
-     * and should be used for "dynamic" configuration (whenever
-     * a service must be requested).
-     * @param Application $app
-     */
-    public function boot(Application $app)
-    {
-        if (!function_exists('pinba_script_name_set') || PHP_SAPI === 'cli' || !$app['intaro_pinba.script_name_configure.enable']) {
-            return;
+
+        if (PHP_SAPI !== 'cli') {
+            $app->extend('dispatcher', function ($dispatcher) use ($app) {
+                /**
+                 * @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface
+                 */
+                $dispatcher->addListener('kernel.request', array($app['intaro_pinba.script_name_configure.listener'], 'onRequest'));
+                return $dispatcher;
+            });
         }
-        /**
-         * @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface
-         */
-        $dispatcher = $app['dispatcher'];
-        $dispatcher->addListener('kernel.request', array($app['intaro_pinba.script_name_configure.listener'], 'onRequest'));
-
     }
-
 }
