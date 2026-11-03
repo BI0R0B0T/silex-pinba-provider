@@ -8,8 +8,10 @@ namespace SilexPinbaProvider\Twig;
 
 
 use Intaro\PinbaBundle\Stopwatch\Stopwatch;
+use Twig\Environment;
 
-class TimedTwigEnvironment extends \Twig_Environment{
+class TimedTwigEnvironment extends Environment
+{
 
     /**
      * @var Stopwatch
@@ -49,9 +51,9 @@ class TimedTwigEnvironment extends \Twig_Environment{
      *
      * @return string The rendered template
      *
-     * @throws \Twig_Error_Loader  When the template cannot be found
-     * @throws \Twig_Error_Syntax  When an error occurred during compilation
-     * @throws \Twig_Error_Runtime When an error occurred during rendering
+     * @throws \Twig\Error\LoaderError  When the template cannot be found
+     * @throws \Twig\Error\SyntaxError  When an error occurred during compilation
+     * @throws \Twig\Error\RuntimeError When an error occurred during rendering
      */
     public function render($name, array $context = array())
     {
